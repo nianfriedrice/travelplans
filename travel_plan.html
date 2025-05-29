@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Europe Trip 2025 Itinerary</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+            color: #1a202c;
+            margin: 0;
+            padding: 0;
+        }
+        .day-banner {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 0 0 12px 12px;
+        }
+        .event-card {
+            background-color: white;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            padding: 16px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-left: 5px solid; /* Will be set by JS based on type */
+        }
+        .event-time {
+            font-weight: 600;
+            color: #2c5282; /* Tailwind's blue-700 */
+        }
+        .event-description {
+            font-size: 1.1em;
+            font-weight: 500;
+            margin-top: 4px;
+            margin-bottom: 8px;
+        }
+        .event-details, .ticket-details {
+            font-size: 0.9em;
+            color: #4a5568; /* Tailwind's gray-700 */
+            margin-bottom: 8px;
+        }
+        .travel-segment {
+            padding: 10px;
+            margin: -16px -16px 16px -16px; /* Span wider than card padding */
+            background-color: #e2e8f0; /* Tailwind's gray-200 */
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 1px dashed #cbd5e0;
+            border-bottom: 1px dashed #cbd5e0;
+        }
+        .travel-segment .details {
+            flex-grow: 1;
+        }
+        .tag {
+            display: inline-block;
+            background-color: #e6fffa; /* Tailwind's teal-100 */
+            color: #2c7a7b; /* Tailwind's teal-700 */
+            padding: 2px 8px;
+            border-radius: 9999px;
+            font-size: 0.75em;
+            margin-right: 4px;
+            margin-top: 4px;
+        }
+        .maps-link {
+            color: #3182ce; /* Tailwind's blue-600 */
+            text-decoration: none;
+            font-size: 1.2em; /* Make emoji bigger */
+        }
+        .ticket-toggle, .gemini-button {
+            background-color: #4299e1; /* Tailwind's blue-500 */
+            color: white;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8em;
+            margin-top: 8px;
+            margin-right: 4px; /* Spacing for multiple buttons */
+        }
+        .gemini-button {
+             background-color: #7e22ce; /* purple-700 */
+        }
+        .gemini-button:hover {
+             background-color: #9333ea; /* purple-600 */
+        }
+        .ticket-content {
+            background-color: #f7fafc; /* Tailwind's gray-100 */
+            border: 1px solid #e2e8f0; /* Tailwind's gray-200 */
+            padding: 10px;
+            margin-top: 8px;
+            border-radius: 6px;
+            font-size: 0.85em;
+        }
+        .scroll-to-current-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #38a169; /* Tailwind's green-600 */
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            cursor: pointer;
+            z-index: 1000;
+        }
+        .day-header {
+            background-color: #4a5568; /* Tailwind's gray-700 */
+            color: white;
+            padding: 12px 16px;
+            border-radius: 12px 12px 0 0;
+            margin-top: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .day-title {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        .day-location {
+            font-size: 0.9em;
+        }
+        .expand-icon {
+            margin-right: 8px;
+            cursor: default; 
+        }
+        .current-event {
+            border: 2px solid #f56565; /* Tailwind's red-500 */
+            box-shadow: 0 0 15px rgba(245, 101, 101, 0.5);
+        }
+        .travel-segment a { 
+            display: inline-block;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1001; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+            max-width: 500px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        .modal-close-btn {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            top: 10px;
+            right: 15px;
+        }
+        .modal-close-btn:hover,
+        .modal-close-btn:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .modal-body {
+            margin-top: 20px; /* Space for close button */
+            white-space: pre-wrap; /* Preserve formatting from Gemini */
+        }
+    </style>
+</head>
+<body>
+
+<div id="geminiModal" class="modal">
+    <div class="modal-content">
+        <span class="modal-close-btn" onclick="closeGeminiModal()">&times;</span>
+        <div id="geminiModalBody" class="modal-body">
+            <p>Loading insights...</p>
+        </div>
+    </div>
+</div>
+
+<script>
+// --- Itinerary Data (JSON object) ---
+const itineraryData = {
+  "tripName": "Europe Trip May/June 2025",
+  "days": [
+    {
+      "date": "2025-05-29",
+      "dayOfWeek": "Thursday",
+      "bannerImage": "https://placehold.co/600x200/A5B4FC/1E293B?text=Off+to+Europe!",
+      "location": "Travel Day",
+      "events": [
+        {
+          "id": "evt-20250529-1",
+          "startTime": "2025-05-29T14:20:00-07:00", // SFO Local Time (PDT)
+          "endTime": "2025-05-30T10:20:00+02:00",   // ZRH Local Time (CEST)
+          "type": "flight",
+          "emoji": "✈️",
+          "description": "Flight SFO to Zürich",
+          "detail": "United Airlines UA44. Arrives May 30.",
+          "departure": {
+            "locationName": "San Francisco Int'l (SFO)",
+            "mapsLink": "maps://?q=SFO+International+Airport",
+            "mapsWebLink": "https://www.google.com/maps/search/?api=1&query=SFO+International+Airport"
+          },
+          "arrival": {
+            "locationName": "Zürich Airport (ZRH)",
+            "mapsLink": "maps://?q=Zurich+Airport",
+            "mapsWebLink": "https://www.google.com/maps/search/?api=1&query=Zurich+Airport"
+          },
+          "ticket": {
+            "type": "text",
+            "content": "Class: United Economy (X). Ensure online check-in. Check baggage allowance."
+          },
+          "notes": ["Remember passport and travel documents."]
+        }
+      ]
+    },
+    {
+      "date": "2025-05-30",
+      "dayOfWeek": "Friday",
+      "bannerImage": "https://images.unsplash.com/photo-1533174409079-5c4819809579?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8emVybWF0dHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=600&q=60", 
+      "location": "Zermatt, Switzerland",
+      "events": [
+        {
+          "id": "evt-20250530-1",
+          "startTime": "2025-05-30T10:20:00+02:00",
+          "endTime": "2025-05-30T11:30:00+02:00",
+          "type": "arrival_process",
+          "emoji": "🛬",
+          "description": "Arrive at Zürich Airport (ZRH), Clear Customs & Immigration",
+          "locationName": "Zürich Airport (ZRH)",
+          "mapsLink": "maps://?q=Zurich+Airport",
+          "mapsWebLink": "https://www.google.com/maps/search/?api=1&query=Zurich+Airport",
+          "notes": ["Collect baggage, find train station signs (Bahn/Train)."]
+        },
+        {
+          "id": "travel-20250530-1",
+          "type": "inter_event_travel",
+          "mode": "train",
+          "emoji": "🚆",
+          "estimatedDuration": "approx. 3h 20m",
+          "description": "Train from Zürich Airport to Zermatt",
+          "origin": {"name": "Zürich Airport Station"},
+          "destination": {"name": "Zermatt Bahnhof"},
+          "mapsDirectionLink": "https://www.google.com/maps/dir/?api=1&origin=Zurich+Airport+Station&destination=Zermatt+Bahnhof&travelmode=transit",
+          "notes": ["Scenic journey! Change trains if necessary (e.g., Visp)."],
+          "startTime": "2025-05-30T11:45:00+02:00", 
+          "endTime": "2025-05-30T15:05:00+02:00"    
+        },
+        {
+          "id": "travel-20250530-2",
+          "type": "inter_event_travel",
+          "mode": "walk",
+          "emoji": "🚶‍♂️",
+          "estimatedDuration": "approx. 10-15m",
+          "description": "Walk from Zermatt Bahnhof to Hotel",
+          "origin": {"name": "Zermatt Bahnhof"},
+          "destination": {"name": "Hotel Ambassador Zermatt"},
+          "mapsDirectionLink": "https://www.google.com/maps/dir/?api=1&origin=Zermatt+Bahnhof&destination=Spissstrasse+10,+Zermatt&travelmode=walking",
+          "startTime": "2025-05-30T15:05:00+02:00",
+          "endTime": "2025-05-30T15:20:00+02:00"
+        },
+        {
+          "id": "evt-20250530-2",
+          "startTime": "2025-05-30T15:20:00+02:00",
+          "endTime": "2025-05-30T16:00:00+02:00",
+          "type": "accommodation",
+          "emoji": "🏨",
+          "description": "Check into Hotel Ambassador Zermatt",
+          "detail": "Spissstrasse 10, Zermatt, VS, 3920. Breakfast included.",
+          "locationName": "Hotel Ambassador Zermatt",
+          "mapsLink": "maps://?q=Hotel+Ambassador+Zermatt",
+          "mapsWebLink": "https://www.google.com/maps/search/?api=1&query=Hotel+Ambassador+Zermatt",
+          "notes": ["Settle in, freshen up."]
+        },
+        {
+          "id": "evt-20250530-3",
+          "startTime": "2025-05-30T16:30:00+02:00",
+          "endTime": "2025-05-30T18:30:00+02:00",
+          "type": "activity",
+          "emoji": "⛰️",
+          "description": "Evening Hike in Zermatt",
+          "detail": "Explore local trails, enjoy Matterhorn views if visible.",
+          "locationName": "Zermatt Area",
+          "mapsLink": "maps://?q=Zermatt+hiking+trails",
+          "mapsWebLink": "https://www.google.com/maps/search/?api=1&query=Zermatt+hiking+trails",
+          "tags": ["Wear good shoes", "Check weather"]
+        },
+        {
+          "id": "evt-20250530-4",
+          "startTime": "2025-05-30T19:30:00+02:00",
+          "endTime": "2025-05-30T21:00:00+02:00",
+          "type": "meal",
+          "emoji": "🍽️",
+          "description": "Dinner in Zermatt",
+          "detail": "Find a cozy restaurant for Swiss cuisine.",
+          "locationName": "Zermatt Village",
+          "mapsLink": "maps://?q=restaurants+in+Zermatt",
+          "mapsWebLink": "https://www.google.com/maps/search/?api=1&query=restaurants+in+Zermatt",
+          "tags": ["Try Fondue!"]
+        }
+      ]
+    },
+    {
+      "date": "2025-05-31",
+      "dayOfWeek": "Saturday",
+      "bannerImage": "https://images.unsplash.com/photo-1501555088652-021faa106b9b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8bWF0dGVyaG9ybnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=600&q=60", 
+      "location": "Zermatt & Transfer to Zurich",
+      "events": [
+        {
+          "id": "evt-20250531-1",
+          "startTime": "2025-05-31T08:00:00+02:00",
+          "endTime": "2025-05-31T09:00:00+02:00",
+          "type": "meal",
+          "emoji": "🥐",
+          "description": "Breakfast at Hotel",
+          "detail": "At Hotel Ambassador Zermatt."
+        },
+        {
+          "id": "evt-20250531-2",
+          "startTime": "2025-05-31T09:30:00+02:00",
+          "endTime": "2025-05-31T13:30:00+02:00",
+          "type": "activity",
+          "emoji": "🚠",
+          "description": "Visit Gornergrat for Matterhorn Views",
+          "detail": "Take the Gornergrat Bahn up. Enjoy panoramic views.",
+          "locationName": "Gornergrat Bahn Station, Zermatt",
+          "mapsLink": "maps://?q=Gornergrat+Bahn+Zermatt",
+          "mapsWebLink": "https://www.google.com/maps/search/?api=1&query=Gornergrat+Bahn+Zermatt",
+          "ticket": {"type": "text", "content": "Purchase tickets at station or online. Check Swiss Pass validity."},
+          "tags": ["High altitude", "Bring layers"]
+        },
+        {
+          "id": "evt-20250531-3",
+          "startTime": "2025-05-31T13:30:00+02:00",
+          "endTime": "2025-05-31T14:30:00+02:00",
+          "type": "meal",
+          "emoji": "🍽️",
+          "description": "Lunch in Zermatt",
+          "locationName": "Zermatt Village"
+        },
+        {
+          "id": "travel-20250531-1",
+          "type": "inter_event_travel",
+          "mode": "walk",
+          "emoji": "🚶‍♂️",
+          "estimatedDuration": "approx. 10-15m",
+          "description": "Walk to Zermatt Bahnhof",
+          "origin": {"name": "Zermatt (e.g. Lunch spot)"},
+          "destination": {"name": "Zermatt Bahnhof"},
+          "mapsDirectionLink": "https://www.google.com/maps/dir/?api=1&origin=Zermatt&destination=Zermatt+Bahnhof&travelmode=walking",
+          "startTime": "2025-05-31T14:45:00+02:00",
+          "endTime": "2025-05-31T15:00:00+02:00"
+        },
+        {
+          "id": "evt-20250531-4",
+          "type": "train_journey", 
+          "emoji": "🚆",
+          "description": "Train from Zermatt to Zurich HB",
+          "startTime": "2025-05-31T15:10:00+02:00", 
+          "endTime": "2025-05-31T18:30:00+02:00",   
+          "detail": "Transfer back to Zurich.",
+          "departure": {"locationName": "Zermatt Bahnhof"},
+          "arrival": {"locationName": "Zurich HB (Main Station)"},
+          "mapsDirectionLink": "https://www.google.com/maps/dir/?api=1&origin=Zermatt+Bahnhof&destination=Zurich+HB&travelmode=transit"
+        },
+        {
+          "id": "travel-20250531-2",
+          "type": "inter_event_travel",
+          "mode": "public_transport",
+          "emoji": "🚋",
+          "estimatedDuration": "approx. 15-20m",
+          "description": "Tram/Walk from Zurich HB to Hotel",
+          "origin": {"name": "Zurich HB"},
+          "destination": {"name": "Ambassador Zurich Hotel"},
+          "mapsDirectionLink": "https://www.google.com/maps/dir/?api=1&origin=Zurich+HB&destination=Ambassador+Zurich+Hotel&travelmode=transit",
+          "startTime": "2025-05-31T18:30:00+02:00",
+          "endTime": "2025-05-31T18:50:00+02:00"
+        },
+        {
+          "id": "evt-20250531-5",
+          "startTime": "2025-05-31T18:50:00+02:00",
+          "endTime": "2025-05-31T19:30:00+02:00",
+          "type": "accommodation",
+          "emoji": "🏨",
+          "description": "Check into Ambassador Zurich Hotel",
+          "detail": "Falkenstrasse 6, 8008 Zürich. (SLH Hotel)",
+          "locationName": "Ambassador Zurich Hotel",
+          "mapsLink": "maps://?q=Ambassador+Hotel+Zurich",
+          "mapsWebLink": "https://www.google.com/maps/search/?api=1&query=Ambassador+Hotel+Zurich"
+        },
+        {
+          "id": "evt-20250531-6",
+          "startTime": "2025-05-31T20:00:00+02:00",
+          "endTime": "2025-05-31T21:30:00+02:00",
+          "type": "meal",
+          "emoji": "🍽️",
+          "description": "Dinner in Zurich",
+          "locationName": "Zurich City",
+          "mapsLink": "maps://?q=restaurants+in+Zurich",
+          "mapsWebLink": "https://www.google.com/maps/search/?api=1&query=restaurants+in+Zurich"
+        }
+      ]
+    },
+    {
+      "date": "2025-06-01",
+      "dayOfWeek": "Sunday",
+      "bannerImage": "https://images.unsplash.com/photo-1521474320652-8a80ac30f9ed?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8bHVjZXJuZSUyMHN3aXR6ZXJsYW5kfGVufDB8fDB8fHww&auto=format&fit=crop&w=600&q=60", 
+      "location": "Zurich, Lucerne, Reichenbach Falls",
+      "events": [
+        {
+          "id": "evt-20250601-1",
+          "startTime": "2025-06-01T08:30:00+02:00",
+          "endTime": "2025-06-01T09:30:00+02:00",
+          "type": "meal",
+          "emoji": "🥐",
+          "description": "Breakfast at Hotel"
+        },
+        {
+          "id": "evt-20250601-2",
+          "startTime": "2025-06-01T10:00:00+02:00",
+          "endTime": "2025-06-01T11:00:00+02:00",
+          "type": "train_journey",
+          "emoji": "🚆",
+          "description": "Train Zurich to Lucerne",
+          "detail": "Approx. 50 mins.",
+          "departure": {"locationName": "Zurich HB"},
+          "arrival": {"locationName": "Lucerne Station"},
+          "mapsDirectionLink": "https://www.google.com/maps/dir/?api=1&origin=Zurich+HB&destination=Lucerne+Station&travelmode=transit"
+        },
+        {
+          "id": "evt-20250601-3",
+          "startTime": "2025-06-01T11:15:00+02:00",
+          "endTime": "2025-06-01T14:00:00+02:00",
+          "type": "activity",
+          "emoji": "🏞️",
+          "description": "Explore Lucerne & Lunch",
+          "detail": "Chapel Bridge, Old Town, Lake Lucerne.",
+          "locationName": "Lucerne",
+          "mapsLink": "maps://?q=Lucerne+Switzerland",
+          "mapsWebLink": "https://www.google.com/maps/search/?api=1&query=Lucerne+Switzerland"
+        },
+        {
+          "id": "evt-20250601-4",
+          "startTime": "2025-06-01T14:15:00+02:00",
+          "endTime": "2025-06-01T15:30:00+02:00",
+          "type": "train_journey",
+          "emoji": "🚆",
+          "description": "Train Lucerne to Meiringen (for Reichenbach Falls)",
+          "detail": "Approx 1h 10m.",
+          "departure": {"locationName": "Lucerne Station"},
+          "arrival": {"locationName": "Meiringen Station"},
+          "mapsDirectionLink": "https://www.google.com/maps/dir/?api=1&origin=Lucerne+Station&destination=Meiringen+Bahnhof&travelmode=transit"
+        },
+         {
+          "id": "travel-20250601-1",
+          "type": "inter_event_travel",
+          "mode": "funicular_walk",
+          "emoji": "🚞🚶‍♂️",
+          "estimatedDuration": "approx. 20-30m",
+          "description": "Travel from Meiringen Station to Reichenbach Falls",
+          "origin": {"name": "Meiringen Station"},
+          "destination": {"name": "Reichenbachfall-Bahn"},
+          "mapsDirectionLink": "https://www.google.com/maps/dir/?api=1&origin=Meiringen+Bahnhof&destination=Reichenbachfall-Bahn&travelmode=transit", 
+          "startTime": "2025-06-01T15:30:00+02:00",
+          "endTime": "2025-06-01T16:00:00+02:00"
+        },
+        {
+          "id": "evt-20250601-5",
+          "startTime": "2025-06-01T16:00:00+02:00",
+          "endTime": "2025-06-01T17:30:00+02:00",
+          "type": "activity",
+          "emoji": "🌊",
+          "description": "Visit Reichenbach Falls",
+          "detail": "Famous Sherlock Holmes location.",
+          "locationName": "Reichenbach Falls",
+          "mapsLink": "maps://?q=Reichenbach+Falls",
+          "mapsWebLink": "https://www.google.com/maps/search/?api=1&query=Reichenbach+Falls",
+          "ticket": {"type": "text", "content": "Funicular ticket likely needed."}
+        },
+        {
+          "id": "evt-20250601-6",
+          "startTime": "2025-06-01T18:00:00+02:00",
+          "endTime": "2025-06-01T20:00:00+02:00",
+          "type": "train_journey",
+          "emoji": "🚆",
+          "description": "Train Meiringen to Zurich HB",
+          "detail": "Return to Zurich. Approx 2h.",
+          "departure": {"locationName": "Meiringen Station"},
+          "arrival": {"locationName": "Zurich HB"},
+          "mapsDirectionLink": "https://www.google.com/maps/dir/?api=1&origin=Meiringen+Bahnhof&destination=Zurich+HB&travelmode=transit"
+        },
+        {
+          "id": "evt-20250601-7",
+          "startTime": "2025-06-01T20:30:00+02:00",
+          "endTime": "2025-06-01T22:00:00+02:00",
+          "type": "meal",
+          "emoji": "🍽️",
+          "description": "Dinner in Zurich",
+          "locationName": "Zurich City"
+        }
+      ]
+    },
+    {
+      "date": "2025-06-02",
+      "dayOfWeek": "Monday",
+      "bannerImage": "https://placehold.co/600x200/FEE2E2/991B1B?text=Schlosshotel+Kronberg", 
+      "location": "Frankfurt & Kronberg, Germany",
+      "events": [
+        {
+          "id": "evt-20250602-1",
+          "startTime": "2025-06-02T08:00:00+02:00",
+          "endTime": "2025-06-02T09:00:00+02:00",
+          "type": "meal",
+          "emoji": "🥐",
+          "description": "Breakfast & Check-out from Ambassador Zurich Hotel"
+        },
+        {
+          "id": "evt-20250602-2",
+          "startTime": "2025-06-02T09:30:00+02:00",
+          "endTime": "2025-06-02T13:30:00+02:00",
+          "type": "train_journey",
+          "emoji": "🚆",
+          "description": "Train Zurich HB to Frankfurt (Main) Hbf",
+          "detail": "Approx. 4 hours.",
+          "departure": {"locationName": "Zurich HB"},
+          "arrival": {"locationName": "Frankfurt (Main) Hbf"},
+          "mapsDirectionLink": "https://www.google.com/maps/dir/?api=1&origin=Zurich+HB&destination=Frankfurt+Main+Hbf&travelmode=transit"
+        },
+        {
+          "id": "evt-20250602-3",
+          "startTime": "2025-06-02T13:30:00+02:00",
+          "endTime": "2025-06-02T14:30:00+02:00",
+          "type": "meal",
+          "emoji": "🍽️",
+          "description": "Lunch near Frankfurt Hbf",
+          "locationName": "Frankfurt Hbf Area"
+        },
+        {
+          "id": "travel-20250602-1",
+          "type": "inter_event_travel",
+          "mode": "public_transport", 
+          "emoji": "🚈",
+          "estimatedDuration": "approx. 30m",
+          "description": "S-Bahn from Frankfurt Hbf to Kronberg",
+          "origin": {"name": "Frankfurt (Main) Hbf"},
+          "destination": {"name": "Kronberg (Taunus) Station"},
+          "mapsDirectionLink": "https://www.google.com/maps/dir/?api=1&origin=Frankfurt+Main+Hbf&destination=Kronberg+(Taunus)+Station&travelmode=transit",
+          "startTime": "2025-06-02T14:45:00+02:00",
+          "endTime": "2025-06-02T15:15:00+02:00"
+        },
+        {
+          "id": "evt-20250602-4",
+          "startTime": "2025-06-02T15:30:00+02:00",
+          "endTime": "2025-06-02T16:00:00+02:00",
+          "type": "accommodation",
+          "emoji": "🏰",
+          "description": "Check into Schlosshotel Kronberg",
+          "detail": "Hainstraße 25, 61476 Kronberg im Taunus. (SLH Hotel)",
+          "locationName": "Schlosshotel Kronberg",
+          "mapsLink": "maps://?q=Schlosshotel+Kronberg",
+          "mapsWebLink": "https://www.google.com/maps/search/?api=1&query=Schlosshotel+Kronberg"
+        },
+        {
+          "id": "evt-20250602-5",
+          "startTime": "2025-06-02T16:00:00+02:00",
+          "endTime": "2025-06-02T18:00:00+02:00",
+          "type": "activity",
+          "emoji": "🌳",
+          "description": "Explore Schlosshotel Kronberg grounds",
+          "detail": "Enjoy the castle hotel and its park."
+        },
+        {
+          "id": "evt-20250602-6",
+          "startTime": "2025-06-02T19:00:00+02:00",
+          "endTime": "2025-06-02T21:00:00+02:00",
+          "type": "meal",
+          "emoji": "🍷",
+          "description": "Dinner at Schlosshotel or in Kronberg",
+          "locationName": "Kronberg im Taunus"
+        }
+      ]
+    },
+    {
+      "date": "2025-06-03",
+      "dayOfWeek": "Tuesday",
+      "bannerImage": "https://images.unsplash.com/photo-1528068957137-c6b71342477b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8YmVybGluJTIwcGhpbGhhcm1vbmlrfGVufDB8fDB8fHww&auto=format&fit=crop&w=600&q=60", 
+      "location": "Berlin, Germany",
+      "events": [
+        {
+          "id": "evt-20250603-1",
+          "startTime": "2025-06-03T08:30:00+02:00",
+          "endTime": "2025-06-03T09:30:00+02:00",
+          "type": "meal",
+          "emoji": "🥐",
+          "description": "Breakfast & Check-out from Schlosshotel Kronberg"
+        },
+        {
+          "id": "travel-20250603-1",
+          "type": "inter_event_travel",
+          "mode": "public_transport",
+          "emoji": "🚈",
+          "estimatedDuration": "approx. 30m",
+          "description": "Travel Kronberg to Frankfurt Hbf",
+          "origin": {"name": "Kronberg (Taunus) Station"},
+          "destination": {"name": "Frankfurt (Main) Hbf"},
+          "mapsDirectionLink": "https://www.google.com/maps/dir/?api=1&origin=Kronberg+(Taunus)+Station&destination=Frankfurt+Main+Hbf&travelmode=transit",
+          "startTime": "2025-06-03T09:45:00+02:00",
+          "endTime": "2025-06-03T10:15:00+02:00"
+        },
+        {
+          "id": "evt-20250603-2",
+          "startTime": "2025-06-03T10:30:00+02:00", 
+          "endTime": "2025-06-03T15:00:00+02:00",   
+          "type": "train_journey",
+          "emoji": "🚄",
+          "description": "Train Frankfurt (Main) Hbf to Berlin Hbf",
+          "detail": "ICE High-speed train.",
+          "departure": {"locationName": "Frankfurt (Main) Hbf"},
+          "arrival": {"locationName": "Berlin Hbf (Main Station)"},
+          "mapsDirectionLink": "https://www.google.com/maps/dir/?api=1&origin=Frankfurt+Main+Hbf&destination=Berlin+Hbf&travelmode=transit"
+        },
+        {
+          "id": "travel-20250603-2",
+          "type": "inter_event_travel",
+          "mode": "public_transport", 
+          "emoji": "🚇",
+          "estimatedDuration": "approx. 30m",
+          "description": "Travel from Berlin Hbf to Airbnb",
+          "origin": {"name": "Berlin Hbf"},
+          "destination": {"name": "Berlin Airbnb (General Area)"}, 
+          "mapsDirectionLink": "https://www.google.com/maps/dir/?api=1&origin=Berlin+Hbf&destination=Berlin&travelmode=transit", 
+          "startTime": "2025-06-03T15:00:00+02:00",
+          "endTime": "2025-06-03T15:30:00+02:00"
+        },
+        {
+          "id": "evt-20250603-3",
+          "startTime": "2025-06-03T15:30:00+02:00",
+          "endTime": "2025-06-03T16:30:00+02:00",
+          "type": "accommodation",
+          "emoji": "🏠",
+          "description": "Check into Berlin Airbnb",
+          "detail": "Shiying's Airbnb. Get keys, settle in.",
+          "locationName": "Berlin Airbnb", 
+          "notes": ["Coordinate arrival time with host."]
+        },
+        {
+          "id": "evt-20250603-4",
+          "startTime": "2025-06-03T17:00:00+02:00",
+          "endTime": "2025-06-03T18:00:00+02:00",
+          "type": "meal",
+          "emoji": "🥙",
+          "description": "Quick early Dinner / Snack",
+          "detail": "Near Airbnb or Philharmonie.",
+          "locationName": "Berlin"
+        },
+         {
+          "id": "travel-20250603-3",
+          "type": "inter_event_travel",
+          "mode": "public_transport",
+          "emoji": "🚇",
+          "estimatedDuration": "approx. 20-30m",
+          "description": "Travel to Berliner Philharmoniker",
+          "origin": {"name": "Berlin Airbnb"},
+          "destination": {"name": "Berliner Philharmonie"},
+          "mapsDirectionLink": "https://www.google.com/maps/dir/?api=1&origin=YOUR_AIRBNB_LOCATION_BERLIN&destination=Berliner+Philharmonie&travelmode=transit",
+          "startTime": "2025-06-03T18:30:00+02:00", 
+          "endTime": "2025-06-03T19:00:00+02:00"
+        },
+        {
+          "id": "evt-20250603-5",
+          "startTime": "2025-06-03T19:30:00+02:00", 
+          "endTime": "2025-06-03T22:00:00+02:00",
+          "type": "activity",
+          "emoji": "🎻",
+          "description": "Attend Berliner Philharmoniker Concert",
+          "locationName": "Berliner Philharmonie",
+          "mapsLink": "maps://?q=Berliner+Philharmonie",
+          "mapsWebLink": "https://www.google.com/maps/search/?api=1&query=Berliner+Philharmonie",
+          "ticket": {"type": "text", "content": "Check booking for concert details and start time. Dress code?"},
+          "tags": ["Classical Music"]
+        }
+      ]
+    },
+    {
+      "date": "2025-06-04",
+      "dayOfWeek": "Wednesday",
+      "bannerImage": "https://images.unsplash.com/photo-1560969184-10fe8719e047?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YmVybGlufGVufDB8fDB8fHww&auto=format&fit=crop&w=600&q=60", 
+      "location": "Berlin, Germany",
+      "events": [
+        {
+          "id": "evt-20250604-1",
+          "startTime": "2025-06-04T09:00:00+02:00",
+          "endTime": "2025-06-04T10:00:00+02:00",
+          "type": "meal",
+          "emoji": "☕",
+          "description": "Breakfast at Airbnb or local cafe"
+        },
+        {
+          "id": "travel-20250604-1",
+          "type": "inter_event_travel",
+          "mode": "public_transport",
+          "emoji": "🚇",
+          "estimatedDuration": "approx. 30-40m",
+          "description": "Travel to Charlottenburg Palace",
+          "origin": {"name": "Berlin Airbnb"},
+          "destination": {"name": "Charlottenburg Palace"},
+          "mapsDirectionLink": "https://www.google.com/maps/dir/?api=1&origin=YOUR_AIRBNB_LOCATION_BERLIN&destination=Charlottenburg+Palace+Berlin&travelmode=transit",
+          "startTime": "2025-06-04T10:00:00+02:00",
+          "endTime": "2025-06-04T10:40:00+02:00"
+        },
+        {
+          "id": "evt-20250604-2",
+          "startTime": "2025-06-04T10:40:00+02:00",
+          "endTime": "2025-06-04T13:30:00+02:00",
+          "type": "activity",
+          "emoji": "👑",
+          "description": "Visit Charlottenburg Palace (Schloss Charlottenburg)",
+          "detail": "Explore the palace and its gardens.",
+          "locationName": "Charlottenburg Palace, Berlin",
+          "mapsLink": "maps://?q=Schloss+Charlottenburg+Berlin",
+          "mapsWebLink": "https://www.google.com/maps/search/?api=1&query=Schloss+Charlottenburg+Berlin",
+          "ticket": {"type": "text", "content": "Check opening hours and ticket options."},
+          "tags": ["History", "Palace"]
+        },
+        {
+          "id": "evt-20250604-3",
+          "startTime": "2025-06-04T13:30:00+02:00",
+          "endTime": "2025-06-04T14:30:00+02:00",
+          "type": "meal",
+          "emoji": "🍽️",
+          "description": "Lunch near Charlottenburg or en route",
+          "locationName": "Berlin"
+        },
+        {
+          "id": "evt-20250604-4",
+          "startTime": "2025-06-04T15:00:00+02:00",
+          "endTime": "2025-06-04T17:30:00+02:00",
+          "type": "activity",
+          "emoji": "🛍️",
+          "description": "Afternoon Shopping / Free Exploration",
+          "detail": "Perhaps 'Lo-skirt' shopping or exploring a chosen district.",
+          "locationName": "Berlin (e.g. Kurfürstendamm for shopping)",
+          "mapsLink": "maps://?q=Kurfürstendamm+Berlin",
+          "mapsWebLink": "https://www.google.com/maps/search/?api=1&query=Kurfürstendamm+Berlin"
+        },
+         {
+          "id": "travel-20250604-2",
+          "type": "inter_event_travel",
+          "mode": "public_transport",
+          "emoji": "🚇",
+          "estimatedDuration": "approx. 20-30m",
+          "description": "Travel to Michelin Restaurant",
+          "origin": {"name": "Afternoon activity location"},
+          "destination": {"name": "Tim Raue Restaurant (Example)"},
+          "mapsDirectionLink": "https://www.google.com/maps/dir/?api=1&origin=YOUR_CURRENT_LOCATION_BERLIN&destination=Tim+Raue+Restaurant+Berlin&travelmode=transit",
+          "startTime": "2025-06-04T18:15:00+02:00", 
+          "endTime": "2025-06-04T18:45:00+02:00"
+        },
+        {
+          "id": "evt-20250604-5",
+          "startTime": "2025-06-04T19:00:00+02:00", 
+          "endTime": "2025-06-04T22:00:00+02:00",
+          "type": "meal",
+          "emoji": "🌟🎂",
+          "description": "Sisi's Birthday Dinner at Michelin Restaurant",
+          "detail": "Example: Tim Raue (2-star Asian). Other options: Horvath, Rutz.",
+          "locationName": "Tim Raue, Rudi-Dutschke-Straße 26, 10969 Berlin",
+          "mapsLink": "maps://?q=Tim+Raue+Restaurant+Berlin",
+          "mapsWebLink": "https://www.google.com/maps/search/?api=1&query=Tim+Raue+Restaurant+Berlin",
+          "ticket": {"type": "text", "content": "Reservation at 7:00 PM. CONFIRM BOOKING!"},
+          "tags": ["Birthday Celebration", "Fine Dining", "Reservation Essential"]
+        }
+      ]
+    },
+    {
+      "date": "2025-06-05",
+      "dayOfWeek": "Thursday",
+      "bannerImage": "https://images.unsplash.com/photo-1599935483804-793f5090e890?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8YmVybGluJTIwbXVzZXVtfGVufDB8fDB8fHww&auto=format&fit=crop&w=600&q=60", 
+      "location": "Berlin, Germany",
+      "events": [
+        {
+          "id": "evt-20250605-1",
+          "startTime": "2025-06-05T09:00:00+02:00",
+          "endTime": "2025-06-05T10:00:00+02:00",
+          "type": "meal",
+          "emoji": "☕",
+          "description": "Breakfast"
+        },
+        {
+          "id": "evt-20250605-2",
+          "startTime": "2025-06-05T10:30:00+02:00",
+          "endTime": "2025-06-05T13:30:00+02:00",
+          "type": "activity",
+          "emoji": "🏛️",
+          "description": "Morning: Museum Island Visit",
+          "detail": "Choose one or two museums (e.g., Pergamon Museum, Neues Museum).",
+          "locationName": "Museum Island, Berlin",
+          "mapsLink": "maps://?q=Museum+Island+Berlin",
+          "mapsWebLink": "https://www.google.com/maps/search/?api=1&query=Museum+Island+Berlin",
+          "ticket": {"type": "text", "content": "Book tickets online to save time."},
+          "tags": ["Art", "History", "Culture"]
+        },
+        {
+          "id": "evt-20250605-3",
+          "startTime": "2025-06-05T13:30:00+02:00",
+          "endTime": "2025-06-05T14:30:00+02:00",
+          "type": "meal",
+          "emoji": "🍽️",
+          "description": "Lunch near Museum Island"
+        },
+        {
+          "id": "evt-20250605-4",
+          "startTime": "2025-06-05T14:45:00+02:00",
+          "endTime": "2025-06-05T17:00:00+02:00",
+          "type": "activity",
+          "emoji": "🧱",
+          "description": "Afternoon: East Side Gallery & Brandenburg Gate",
+          "detail": "Walk along the East Side Gallery, then visit Brandenburg Gate.",
+          "locationName": "East Side Gallery, Berlin", 
+          "mapsLink": "maps://?q=East+Side+Gallery+Berlin",
+          "mapsWebLink": "https://www.google.com/maps/search/?api=1&query=East+Side+Gallery+Berlin",
+          "notes": ["Allow travel time between East Side Gallery and Brandenburg Gate."]
+        },
+         {
+          "id": "travel-20250605-1",
+          "type": "inter_event_travel",
+          "mode": "public_transport",
+          "emoji": "🚇",
+          "estimatedDuration": "approx. 20-30m",
+          "description": "Travel to Cookies Cream Restaurant",
+          "origin": {"name": "Afternoon activity location (e.g. near Brandenburg Gate)"},
+          "destination": {"name": "Cookies Cream"},
+          "mapsDirectionLink": "https://www.google.com/maps/dir/?api=1&origin=Brandenburg+Gate+Berlin&destination=Cookies+Cream+Berlin&travelmode=transit",
+          "startTime": "2025-06-05T17:45:00+02:00", 
+          "endTime": "2025-06-05T18:15:00+02:00"
+        },
+        {
+          "id": "evt-20250605-5",
+          "startTime": "2025-06-05T18:30:00+02:00", 
+          "endTime": "2025-06-05T20:30:00+02:00",
+          "type": "meal",
+          "emoji": "🥕🌿",
+          "description": "Early Dinner at Cookies Cream",
+          "detail": "Michelin-starred vegetarian restaurant. Behrenstraße 55, 10117 Berlin (Check address, PDF had 29).",
+          "locationName": "Cookies Cream, Behrenstraße 55, 10117 Berlin",
+          "mapsLink": "maps://?q=Cookies+Cream+Berlin",
+          "mapsWebLink": "https://www.google.com/maps/search/?api=1&query=Cookies+Cream+Berlin",
+          "ticket": {"type": "text", "content": "Reservation for 6:30 PM. Confirmed."},
+          "tags": ["Vegetarian", "Fine Dining", "Reservation Confirmed"]
+        }
+      ]
+    },
+    {
+      "date": "2025-06-06",
+      "dayOfWeek": "Friday",
+      "bannerImage": "https://images.unsplash.com/photo-1575624140095-3cf7f38900ca?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aG90ZWwlMjBhZGxvbiUyMGtlbnBuc2tpfGVufDB8fDB8fHww&auto=format&fit=crop&w=600&q=60", 
+      "location": "Berlin, Germany",
+      "events": [
+        {
+          "id": "evt-20250606-1",
+          "startTime": "2025-06-06T09:00:00+02:00",
+          "endTime": "2025-06-06T10:00:00+02:00",
+          "type": "transition",
+          "emoji": "짐", 
+          "description": "Breakfast, Check-out from Airbnb"
+        },
+        {
+          "id": "travel-20250606-1",
+          "type": "inter_event_travel",
+          "mode": "taxi_public_transport",
+          "emoji": "🚕🚇",
+          "estimatedDuration": "approx. 30m",
+          "description": "Travel from Airbnb to Hotel Adlon Kempinski",
+          "origin": {"name": "Berlin Airbnb"},
+          "destination": {"name": "Hotel Adlon Kempinski Berlin"},
+          "mapsDirectionLink": "https://www.google.com/maps/dir/?api=1&origin=YOUR_AIRBNB_LOCATION_BERLIN&destination=Hotel+Adlon+Kempinski+Berlin&travelmode=transit",
+          "startTime": "2025-06-06T10:00:00+02:00",
+          "endTime": "2025-06-06T10:30:00+02:00"
+        },
+        {
+          "id": "evt-20250606-2",
+          "startTime": "2025-06-06T10:30:00+02:00",
+          "endTime": "2025-06-06T11:30:00+02:00",
+          "type": "accommodation",
+          "emoji": "🏨✨",
+          "description": "Check into Hotel Adlon Kempinski Berlin",
+          "detail": "Unter den Linden 77, 10117 Berlin. Breakfast included.",
+          "locationName": "Hotel Adlon Kempinski Berlin",
+          "mapsLink": "maps://?q=Hotel+Adlon+Kempinski+Berlin",
+          "mapsWebLink": "https://www.google.com/maps/search/?api=1&query=Hotel+Adlon+Kempinski+Berlin",
+          "notes": ["Store luggage if room not ready."]
+        },
+        {
+          "id": "evt-20250606-3",
+          "startTime": "2025-06-06T11:30:00+02:00",
+          "endTime": "2025-06-06T13:00:00+02:00",
+          "type": "activity",
+          "emoji": "🏛️",
+          "description": "Explore near Hotel Adlon",
+          "detail": "Brandenburg Gate, Pariser Platz, Reichstag Building (exterior).",
+          "locationName": "Pariser Platz, Berlin",
+          "mapsLink": "maps://?q=Pariser+Platz+Berlin",
+          "mapsWebLink": "https://www.google.com/maps/search/?api=1&query=Pariser+Platz+Berlin"
+        },
+        {
+          "id": "evt-20250606-4",
+          "startTime": "2025-06-06T13:00:00+02:00",
+          "endTime": "2025-06-06T14:00:00+02:00",
+          "type": "meal",
+          "emoji": "🍽️",
+          "description": "Lunch near Hotel Adlon"
+        },
+        {
+          "id": "evt-20250606-5",
+          "startTime": "2025-06-06T14:30:00+02:00",
+          "endTime": "2025-06-06T17:30:00+02:00",
+          "type": "activity",
+          "emoji": "🚶‍♀️",
+          "description": "Afternoon: Potsdamer Platz & Tiergarten",
+          "detail": "Explore modern architecture at Potsdamer Platz, relax in Tiergarten park.",
+          "locationName": "Potsdamer Platz, Berlin",
+          "mapsLink": "maps://?q=Potsdamer+Platz+Berlin",
+          "mapsWebLink": "https://www.google.com/maps/search/?api=1&query=Potsdamer+Platz+Berlin"
+        },
+        {
+          "id": "evt-20250606-6",
+          "startTime": "2025-06-06T19:00:00+02:00",
+          "endTime": "2025-06-06T21:00:00+02:00",
+          "type": "meal",
+          "emoji": "🍷",
+          "description": "Dinner in Berlin",
+          "detail": "Choose a restaurant in Mitte or another preferred area."
+        }
+      ]
+    },
+    {
+      "date": "2025-06-07",
+      "dayOfWeek": "Saturday",
+      "bannerImage": "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGFyaXN8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=600&q=60", 
+      "location": "Paris, France",
+      "events": [
+        {
+          "id": "evt-20250607-1",
+          "startTime": "2025-06-07T08:30:00+02:00",
+          "endTime": "2025-06-07T09:30:00+02:00",
+          "type": "meal",
+          "emoji": "🥐🏨",
+          "description": "Breakfast at Hotel Adlon Kempinski"
+        },
+        {
+          "id": "evt-20250607-2",
+          "startTime": "2025-06-07T09:30:00+02:00",
+          "endTime": "2025-06-07T11:30:00+02:00",
+          "type": "activity",
+          "emoji": "🛍️",
+          "description": "Last morning in Berlin",
+          "detail": "Souvenir shopping or a quick revisit to a favorite spot.",
+          "locationName": "Berlin"
+        },
+        {
+          "id": "evt-20250607-3",
+          "startTime": "2025-06-07T11:30:00+02:00",
+          "endTime": "2025-06-07T12:30:00+02:00",
+          "type": "transition",
+          "emoji": "짐➡️",
+          "description": "Check-out from Hotel Adlon, Quick Lunch"
+        },
+        {
+          "id": "travel-20250607-1",
+          "type": "inter_event_travel",
+          "mode": "taxi_express_train", 
+          "emoji": "🚕🚄",
+          "estimatedDuration": "approx. 45-60m",
+          "description": "Travel to Berlin Brandenburg Airport (BER)",
+          "origin": {"name": "Hotel Adlon Kempinski Berlin"},
+          "destination": {"name": "Berlin Brandenburg Airport (BER)"},
+          "mapsDirectionLink": "https://www.google.com/maps/dir/?api=1&origin=Hotel+Adlon+Kempinski+Berlin&destination=Berlin+Brandenburg+Airport&travelmode=transit",
+          "startTime": "2025-06-07T12:45:00+02:00", 
+          "endTime": "2025-06-07T13:45:00+02:00"
+        },
+        {
+          "id": "evt-20250607-4",
+          "startTime": "2025-06-07T15:45:00+02:00", 
+          "endTime": "2025-06-07T17:30:00+02:00",   
+          "type": "flight",
+          "emoji": "✈️",
+          "description": "Flight Berlin (BER) to Paris (CDG)",
+          "detail": "Air France AF1235. Duration approx. 1h 45m.",
+          "departure": {
+            "locationName": "Berlin Brandenburg Airport (BER)",
+            "mapsLink": "maps://?q=BER+Airport",
+            "mapsWebLink": "https://www.google.com/maps/search/?api=1&query=BER+Airport"
+          },
+          "arrival": {
+            "locationName": "Paris Charles de Gaulle (CDG)",
+            "mapsLink": "maps://?q=CDG+Airport",
+            "mapsWebLink": "https://www.google.com/maps/search/?api=1&query=CDG+Airport"
+          },
+          "ticket": {"type": "text", "content": "Air France AF1235. Check terminal and gate."}
+        },
+        {
+          "id": "travel-20250607-2",
+          "type": "inter_event_travel",
+          "mode": "public_transport", 
+          "emoji": "🚆",
+          "estimatedDuration": "approx. 1h",
+          "description": "Travel from CDG Airport to Citadines Hotel",
+          "origin": {"name": "Paris Charles de Gaulle (CDG) Airport"},
+          "destination": {"name": "Citadines Saint-Germain-des-Prés Paris"},
+          "mapsDirectionLink": "https://www.google.com/maps/dir/?api=1&origin=CDG+Airport&destination=Citadines+Saint-Germain-des-Prés+Paris&travelmode=transit",
+          "startTime": "2025-06-07T18:00:00+02:00", 
+          "endTime": "2025-06-07T19:00:00+02:00"
+        },
+        {
+          "id": "evt-20250607-5",
+          "startTime": "2025-06-07T19:00:00+02:00",
+          "endTime": "2025-06-07T19:45:00+02:00",
+          "type": "accommodation",
+          "emoji": "🏨",
+          "description": "Check into Citadines Saint-Germain-des-Prés Paris",
+          "detail": "53 ter, quai des Grands Augustins, 75006 Paris.",
+          "locationName": "Citadines Saint-Germain-des-Prés Paris",
+          "mapsLink": "maps://?q=Citadines+Saint-Germain-des-Prés+Paris",
+          "mapsWebLink": "https://www.google.com/maps/search/?api=1&query=Citadines+Saint-Germain-des-Prés+Paris"
+        },
+        {
+          "id": "evt-20250607-6",
+          "startTime": "2025-06-07T20:15:00+02:00",
+          "endTime": "2025-06-07T22:00:00+02:00",
+          "type": "meal",
+          "emoji": "🍽️🇫🇷",
+          "description": "Dinner in Saint-Germain-des-Prés",
+          "detail": "Explore local bistros and restaurants.",
+          "locationName": "Saint-Germain-des-Prés, Paris",
+          "mapsLink": "maps://?q=restaurants+Saint-Germain-des-Prés+Paris",
+          "mapsWebLink": "https://www.google.com/maps/search/?api=1&query=restaurants+Saint-Germain-des-Prés+Paris"
+        }
+      ]
+    },
+    {
+      "date": "2025-06-08",
+      "dayOfWeek": "Sunday",
+      "bannerImage": "https://images.unsplash.com/photo-1555952517-2e8e729e0b44?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8cGFyaXN8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=600&q=60", 
+      "location": "Paris, France",
+      "events": [
+        {
+          "id": "evt-20250608-1",
+          "startTime": "2025-06-08T09:00:00+02:00",
+          "endTime": "2025-06-08T10:00:00+02:00",
+          "type": "meal",
+          "emoji": "🥐☕",
+          "description": "Breakfast at hotel or local Pâtisserie"
+        },
+        {
+          "id": "travel-20250608-1",
+          "type": "inter_event_travel",
+          "mode": "metro_walk",
+          "emoji": "🚇🚶‍♀️",
+          "estimatedDuration": "approx. 20-30m",
+          "description": "Travel to Eiffel Tower",
+          "origin": {"name": "Citadines Saint-Germain-des-Prés Paris"},
+          "destination": {"name": "Eiffel Tower"},
+          "mapsDirectionLink": "https://www.google.com/maps/dir/?api=1&origin=Citadines+Saint-Germain-des-Prés+Paris&destination=Eiffel+Tower&travelmode=transit",
+          "startTime": "2025-06-08T10:00:00+02:00",
+          "endTime": "2025-06-08T10:30:00+02:00"
+        },
+        {
+          "id": "evt-20250608-2",
+          "startTime": "2025-06-08T10:30:00+02:00",
+          "endTime": "2025-06-08T13:00:00+02:00",
+          "type": "activity",
+          "emoji": "🗼",
+          "description": "Visit the Eiffel Tower",
+          "detail": "Ascend for panoramic views of Paris.",
+          "locationName": "Eiffel Tower, Paris",
+          "mapsLink": "maps://?q=Eiffel+Tower+Paris",
+          "mapsWebLink": "https://www.google.com/maps/search/?api=1&query=Eiffel+Tower+Paris",
+          "ticket": {"type": "text", "content": "Book tickets WELL in advance! Check security lines."},
+          "tags": ["Iconic Landmark", "Book Ahead!", "Views"]
+        },
+        {
+          "id": "evt-20250608-3",
+          "startTime": "2025-06-08T13:00:00+02:00",
+          "endTime": "2025-06-08T14:00:00+02:00",
+          "type": "meal",
+          "emoji": "🍽️",
+          "description": "Lunch near Eiffel Tower or along the Seine"
+        },
+        {
+          "id": "travel-20250608-2",
+          "type": "inter_event_travel",
+          "mode": "boat_metro_walk", 
+          "emoji": "🚢🚇",
+          "estimatedDuration": "approx. 30-45m",
+          "description": "Travel to Louvre Museum",
+          "origin": {"name": "Eiffel Tower area"},
+          "destination": {"name": "Louvre Museum"},
+          "mapsDirectionLink": "https://www.google.com/maps/dir/?api=1&origin=Eiffel+Tower&destination=Louvre+Museum&travelmode=transit",
+          "startTime": "2025-06-08T14:15:00+02:00",
+          "endTime": "2025-06-08T15:00:00+02:00"
+        },
+        {
+          "id": "evt-20250608-4",
+          "startTime": "2025-06-08T15:00:00+02:00",
+          "endTime": "2025-06-08T18:00:00+02:00",
+          "type": "activity",
+          "emoji": "🖼️",
+          "description": "Visit the Louvre Museum (Highlights)",
+          "detail": "See Mona Lisa, Venus de Milo, Winged Victory. Focus on key exhibits.",
+          "locationName": "Louvre Museum, Paris",
+          "mapsLink": "maps://?q=Louvre+Museum+Paris",
+          "mapsWebLink": "https://www.google.com/maps/search/?api=1&query=Louvre+Museum+Paris",
+          "ticket": {"type": "text", "content": "Book tickets online. Consider specific time slots."},
+          "tags": ["Art Museum", "World Famous", "Can be crowded"]
+        },
+        {
+          "id": "evt-20250608-5",
+          "startTime": "2025-06-08T19:30:00+02:00",
+          "endTime": "2025-06-08T21:30:00+02:00",
+          "type": "meal",
+          "emoji": "🍷🌙",
+          "description": "Dinner in Le Marais or Latin Quarter",
+          "detail": "Enjoy the Parisian evening atmosphere.",
+          "locationName": "Le Marais, Paris", 
+          "mapsLink": "maps://?q=restaurants+Le+Marais+Paris",
+          "mapsWebLink": "https://www.google.com/maps/search/?api=1&query=restaurants+Le+Marais+Paris"
+        }
+      ]
+    },
+    {
+      "date": "2025-06-09",
+      "dayOfWeek": "Monday",
+      "bannerImage": "https://placehold.co/600x200/BFDBFE/1E40AF?text=Au+Revoir+Paris!", 
+      "location": "Travel Day",
+      "events": [
+        {
+          "id": "evt-20250609-1",
+          "startTime": "2025-06-09T08:30:00+02:00",
+          "endTime": "2025-06-09T09:30:00+02:00",
+          "type": "meal",
+          "emoji": "🥐",
+          "description": "Final Parisian Breakfast"
+        },
+        {
+          "id": "evt-20250609-2",
+          "startTime": "2025-06-09T09:30:00+02:00",
+          "endTime": "2025-06-09T11:30:00+02:00",
+          "type": "activity",
+          "emoji": "🛍️🎁",
+          "description": "Last minute Souvenirs / Pack",
+          "detail": "Ensure everything is packed and ready for departure."
+        },
+        {
+          "id": "evt-20250609-3",
+          "startTime": "2025-06-09T11:30:00+02:00",
+          "endTime": "2025-06-09T12:00:00+02:00",
+          "type": "transition",
+          "emoji": "짐➡️🏨",
+          "description": "Check-out from Citadines Hotel"
+        },
+        {
+          "id": "travel-20250609-1",
+          "type": "inter_event_travel",
+          "mode": "taxi_public_transport", 
+          "emoji": "🚕🚆",
+          "estimatedDuration": "approx. 1h",
+          "description": "Travel to Paris Charles de Gaulle (CDG) Airport",
+          "origin": {"name": "Citadines Saint-Germain-des-Prés Paris"},
+          "destination": {"name": "Paris Charles de Gaulle (CDG) Airport"},
+          "mapsDirectionLink": "https://www.google.com/maps/dir/?api=1&origin=Citadines+Saint-Germain-des-Prés+Paris&destination=CDG+Airport&travelmode=transit",
+          "startTime": "2025-06-09T12:00:00+02:00", 
+          "endTime": "2025-06-09T13:00:00+02:00"
+        },
+        {
+          "id": "evt-20250609-4",
+          "startTime": "2025-06-09T16:00:00+02:00", 
+          "endTime": "2025-06-09T18:15:00-07:00",   
+          "type": "flight",
+          "emoji": "✈️🌍",
+          "description": "Flight Paris (CDG) to San Francisco (SFO)",
+          "detail": "Air France AF0082. Duration: 11h 15m.",
+          "departure": {
+            "locationName": "Paris Charles de Gaulle (CDG)",
+            "mapsLink": "maps://?q=CDG+Airport",
+            "mapsWebLink": "https://www.google.com/maps/search/?api=1&query=CDG+Airport"
+          },
+          "arrival": {
+            "locationName": "San Francisco Int'l (SFO)",
+            "mapsLink": "maps://?q=SFO+International+Airport",
+            "mapsWebLink": "https://www.google.com/maps/search/?api=1&query=SFO+International+Airport"
+          },
+          "ticket": {
+            "type": "text",
+            "content": "Air France AF0082. Paid with 28000 points. Check terminal (e.g., T2F was mentioned for another flight, verify for AF0082)."
+          },
+          "notes": ["Welcome back home!"]
+        }
+      ]
+    }
+  ]
+};
+// --- End of Itinerary Data ---
+
+const eventTypeColors = {
+    flight: 'border-blue-500',
+    train_journey: 'border-green-500',
+    activity: 'border-yellow-500',
+    accommodation: 'border-purple-500',
+    meal: 'border-pink-500',
+    arrival_process: 'border-indigo-500',
+    transition: 'border-gray-400',
+    inter_event_travel: 'border-teal-500'
+};
+
+// --- Modal Functions ---
+const geminiModal = document.getElementById('geminiModal');
+const geminiModalBody = document.getElementById('geminiModalBody');
+
+function openGeminiModal(loadingText = "Loading insights...") {
+    geminiModalBody.innerHTML = `<p>${loadingText}</p>`;
+    geminiModal.style.display = 'block';
+}
+
+function closeGeminiModal() {
+    geminiModal.style.display = 'none';
+}
+// Close modal if user clicks outside of it
+window.onclick = function(event) {
+    if (event.target == geminiModal) {
+        closeGeminiModal();
+    }
+}
+
+// --- Gemini API Function ---
+async function getGeminiSuggestion(prompt) {
+    openGeminiModal("✨ Fetching insights from Gemini...");
+    let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+    const payload = { contents: chatHistory };
+    const apiKey = "AIzaSyC2q-wxszQBCVlMFO_Si3eGDHRQ0PSZ5O8"; // API key will be injected by the environment
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+    try {
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error("Gemini API Error:", errorData);
+            geminiModalBody.innerHTML = `<p>Sorry, couldn't fetch insights at the moment. Error: ${errorData.error?.message || response.statusText}</p>`;
+            return;
+        }
+        const result = await response.json();
+        if (result.candidates && result.candidates.length > 0 &&
+            result.candidates[0].content && result.candidates[0].content.parts &&
+            result.candidates[0].content.parts.length > 0) {
+            const text = result.candidates[0].content.parts[0].text;
+            geminiModalBody.innerHTML = text.replace(/\n/g, '<br>'); // Replace newlines with <br> for HTML display
+        } else {
+            console.error("Gemini API Response format error:", result);
+            geminiModalBody.innerHTML = "<p>Sorry, received an unexpected response from the assistant.</p>";
+        }
+    } catch (error) {
+        console.error("Error calling Gemini API:", error);
+        geminiModalBody.innerHTML = `<p>Sorry, there was an issue connecting to the assistant. ${error.message}</p>`;
+    }
+}
+
+
+// --- Itinerary Rendering Functions ---
+function formatTime(dateStr) {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+}
+
+function formatDate(dateStr) {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+}
+
+function generateMapsLink(locationName, mapsLink, mapsWebLink) {
+    if (!locationName) return '';
+    const mobileLink = mapsLink || `maps://?q=${encodeURIComponent(locationName)}`;
+    const webLink = mapsWebLink || `https://maps.google.com/?q=${encodeURIComponent(locationName)}`;
+    return ` <a href="${mobileLink}" onclick="openWebLinkFallback(event, '${webLink}')" class="maps-link" target="_blank" title="Open in Maps">🗺️</a>`;
+}
+
+function generateDirectionsLink(description, mapsDirectionLink, mode) {
+    if (!mapsDirectionLink) return '';
+    const travelMode = mode || 'transit';
+    const mobileDirections = `maps://?daddr=${encodeURIComponent(description)}&directionsmode=${travelMode}`;
+    const webDirections = mapsDirectionLink;
+    return `<a href="${mobileDirections}" onclick="openWebLinkFallback(event, '${webDirections}')" class="maps-link" target="_blank" title="Get Directions">📍</a>`;
+}
+
+function openWebLinkFallback(event, webLink) {
+    event.preventDefault(); 
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (isMobile && event.currentTarget.href.startsWith('maps://')) {
+        window.location.href = event.currentTarget.href;
+    } else {
+        window.open(webLink, '_blank');
+    }
+}
+
+function createEventElement(event, dayLocation, dayDateStr) {
+    const card = document.createElement('div');
+    card.className = `event-card ${eventTypeColors[event.type] || 'border-gray-500'}`;
+    card.id = event.id;
+
+    let html = '';
+
+    if (event.type === 'inter_event_travel') {
+        card.className = 'travel-segment'; 
+        html += `<div class="details"><span>${event.emoji || ''} ${event.description}</span><br><small class="text-gray-600">(${event.estimatedDuration})</small></div>`;
+        if (event.mapsDirectionLink) {
+            html += generateDirectionsLink(event.destination?.name || event.description, event.mapsDirectionLink, event.mode);
+        }
+    } else {
+        html += `<div class="event-time">${formatTime(event.startTime)} - ${formatTime(event.endTime)} ${ (new Date(event.startTime)).getDate() !== (new Date(event.endTime)).getDate() ? '('+formatDate(event.endTime)+')' : ''}</div>`;
+        html += `<div class="event-description">
+                    <span class="expand-icon">▶</span>
+                    ${event.emoji || ''} ${event.description}
+                    ${(event.locationName || event.departure?.locationName) ? generateMapsLink(event.locationName || event.departure?.locationName, event.mapsLink || event.departure?.mapsLink, event.mapsWebLink || event.departure?.mapsWebLink) : ''}
+                 </div>`;
+        html += `<div id="${event.id}-details" class="event-details-content" style="display: block;">`;
+
+        if (event.detail) {
+            html += `<p class="event-details">${event.detail}</p>`;
+        }
+        if (event.departure && event.arrival) {
+            html += `<p class="event-details"><strong>From:</strong> ${event.departure.locationName} ${generateMapsLink(event.departure.locationName, event.departure.mapsLink, event.departure.mapsWebLink)}</p>`;
+            html += `<p class="event-details"><strong>To:</strong> ${event.arrival.locationName} ${generateMapsLink(event.arrival.locationName, event.arrival.mapsLink, event.arrival.mapsWebLink)}</p>`;
+        }
+        if (event.notes && event.notes.length > 0) {
+            html += `<p class="event-details"><em>Notes: ${event.notes.join(', ')}</em></p>`;
+        }
+        if (event.tags && event.tags.length > 0) {
+            html += `<div>${event.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div>`;
+        }
+
+        if (event.ticket) {
+            html += `<button class="ticket-toggle" onclick="toggleTicket('${event.id}-ticket')">View Ticket</button>`;
+            html += `<div id="${event.id}-ticket" class="ticket-content" style="display: none;">`;
+            if (event.ticket.type === 'image') {
+                html += `<img src="${event.ticket.content}" alt="Ticket" style="max-width:100%; border-radius: 4px;">`;
+            } else if (event.ticket.type === 'link') {
+                html += `<a href="${event.ticket.content}" target="_blank" class="text-blue-600 hover:underline">View Ticket Document</a>`;
+            } else {
+                html += `<p>${event.ticket.content}</p>`;
+            }
+            html += `</div>`;
+        }
+
+        // Add Gemini "Activity Spark" button for 'activity' type events
+        if (event.type === 'activity' && event.locationName) {
+             const prompt = `Tell me an interesting, little-known fact or a quirky historical detail about "${event.description}" in "${event.locationName}". Keep it to 2-3 sentences, suitable for a traveler looking for quick insights.`;
+             html += `<button class="gemini-button" onclick="getGeminiSuggestion(\`${prompt}\`)">Activity Spark ✨</button>`;
+        }
+
+        html += `</div>`; 
+    }
+
+    card.innerHTML = html;
+    return card;
+}
+
+function toggleTicket(ticketId) {
+    const ticketContent = document.getElementById(ticketId);
+    if (ticketContent) {
+        ticketContent.style.display = ticketContent.style.display === 'none' ? 'block' : 'none';
+    }
+}
+
+function scrollToCurrentEvent() {
+    const now = new Date();
+    let currentEventId = null;
+    let nextUpcomingEventId = null;
+    let firstEventOfTodayId = null;
+
+    const allEvents = [];
+    itineraryData.days.forEach(day => {
+        day.events.forEach(event => {
+            allEvents.push({ ...event, dayDate: day.date });
+        });
+    });
+    allEvents.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
+
+    for (const event of allEvents) {
+        if (!event.startTime) continue;
+        const eventStart = new Date(event.startTime);
+        const eventEnd = event.endTime ? new Date(event.endTime) : new Date(eventStart.getTime() + (2 * 60 * 60 * 1000)); 
+
+        if (!firstEventOfTodayId && eventStart.toDateString() === now.toDateString()) {
+            firstEventOfTodayId = event.id;
+        }
+        if (now >= eventStart && now <= eventEnd) {
+            currentEventId = event.id;
+            break; 
+        }
+        if (now < eventStart && !nextUpcomingEventId) {
+            nextUpcomingEventId = event.id;
+        }
+    }
+    
+    let targetId = currentEventId || nextUpcomingEventId || firstEventOfTodayId;
+    if (!targetId) {
+        for (const day of itineraryData.days) {
+            const dayDate = new Date(day.date + "T00:00:00"); 
+            if (dayDate >= new Date(now.toDateString())) { 
+                 if (day.events.length > 0 && day.events[0].id) {
+                    targetId = day.events[0].id;
+                    break;
+                 }
+            }
+        }
+    }
+    if (!targetId && itineraryData.days.length > 0 && itineraryData.days[0].events.length > 0) {
+        targetId = itineraryData.days[0].events[0].id;
+    }
+
+    if (targetId) {
+        const targetElement = document.getElementById(targetId);
+        if (targetElement) {
+            document.querySelectorAll('.current-event').forEach(el => el.classList.remove('current-event'));
+            targetElement.classList.add('current-event');
+            targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
+}
+
+window.onload = () => {
+    const itineraryContainer = document.createElement('div');
+    itineraryContainer.className = 'container mx-auto p-4 max-w-2xl';
+    document.body.appendChild(itineraryContainer);
+
+    const tripTitle = document.createElement('h1');
+    tripTitle.textContent = itineraryData.tripName;
+    tripTitle.className = 'text-3xl font-bold text-center my-6 text-gray-700';
+    itineraryContainer.appendChild(tripTitle);
+
+    itineraryData.days.forEach(day => {
+        const dayWrapper = document.createElement('div');
+        dayWrapper.className = 'day-section mb-8';
+        
+        const dayHeader = document.createElement('div');
+        dayHeader.className = 'day-header';
+        
+        const dayInfo = document.createElement('div');
+        dayInfo.innerHTML = `<div class="day-title">${day.dayOfWeek}, ${formatDate(day.date + "T00:00:00")}</div><div class="day-location">${day.location}</div>`;
+        dayHeader.appendChild(dayInfo);
+
+        // Add Gemini "Day Insights" button
+        const dayEventsDesc = day.events.map(e => e.description).join(', ');
+        const dayPrompt = `I have the following itinerary for today, ${formatDate(day.date + "T00:00:00")}, in ${day.location}: ${dayEventsDesc}. Can you give me one interesting local tip for ${day.location} and a fun fact about one of the planned activities or sights for today? Keep it concise and engaging for a traveler. If it's a travel day with no specific location activities, just wish a pleasant journey.`;
+        const dayInsightsButton = document.createElement('button');
+        dayInsightsButton.className = 'gemini-button text-xs'; // smaller text
+        dayInsightsButton.innerHTML = 'Day Insights ✨';
+        dayInsightsButton.onclick = () => getGeminiSuggestion(dayPrompt);
+        dayHeader.appendChild(dayInsightsButton);
+
+        dayWrapper.appendChild(dayHeader);
+
+        if (day.bannerImage) {
+            const banner = document.createElement('img');
+            banner.src = day.bannerImage;
+            banner.alt = `${day.location} banner`;
+            banner.className = 'day-banner mb-4';
+            dayWrapper.appendChild(banner);
+        }
+        
+        const eventsContainer = document.createElement('div');
+        eventsContainer.className = 'events-container px-2 md:px-0';
+        day.events.forEach(event => {
+            eventsContainer.appendChild(createEventElement(event, day.location, day.date));
+        });
+        dayWrapper.appendChild(eventsContainer);
+        itineraryContainer.appendChild(dayWrapper);
+    });
+
+    const scrollToCurrentButton = document.createElement('button');
+    scrollToCurrentButton.innerHTML = '🎯';
+    scrollToCurrentButton.title = "Scroll to Current Event";
+    scrollToCurrentButton.className = 'scroll-to-current-btn';
+    scrollToCurrentButton.onclick = scrollToCurrentEvent;
+    document.body.appendChild(scrollToCurrentButton);
+
+    scrollToCurrentEvent(); 
+};
+</script>
+</body>
+</html>
