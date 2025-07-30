@@ -1257,7 +1257,7 @@ async function getGeminiSuggestion(prompt) {
     openGeminiModal("✨ Fetching insights from Gemini...");
     let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
     const payload = { contents: chatHistory };
-    const apiKey = "AIzaSyC2q-wxszQBCVlMFO_Si3eGDHRQ0PSZ5O8"; // API key will be injected by the environment
+    const apiKey = ""; // API key will be injected by the environment
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
     try {
